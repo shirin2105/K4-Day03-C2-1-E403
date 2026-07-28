@@ -1,0 +1,62 @@
+graph TD
+    %% Define Styles
+    classDef startStyle fill:#4A90E2,stroke:#1D5B9B,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef routerStyle fill:#F5A623,stroke:#D0021B,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef chatbotStyle fill:#7ED321,stroke:#417505,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef reactStyle fill:#9013FE,stroke:#4A00E0,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef toolStyle fill:#50E3C2,stroke:#0E9888,stroke-width:2px,color:#000,font-weight:bold;
+    classDef guardStyle fill:#D0021B,stroke:#900C3F,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef endStyle fill:#4682B4,stroke:#2B4C7E,stroke-width:2px,color:#fff,font-weight:bold;
+
+    %% Workflow Nodes
+    A["👤 Người Dùng Nhập Câu Hỏi (User Input)"] :::startStyle
+    B{"🔀 Router: Phân Loại Yêu Cầu & Độ Phức Tạp"} :::routerStyle
+    
+    %% Branch 1: Simple Queries -> Baseline Chatbot Path
+    C["🟢 Câu Hỏi Đơn Giản / Kiến Thức Tĩnh<br/>(Hỏi về định dạng CV, tiêu chí JD, gợi ý câu hỏi phỏng vấn)"] :::chatbotStyle
+    D["🤖 CHATBOT BASELINE PATH<br/>(LLM xử lý trực tiếp không cần Tool)"] :::chatbotStyle
+    E["💬 Sinh Câu Trả Lời Tư Vấn Khái Quát"] :::chatbotStyle
+    
+    %% Branch 2: Complex Queries -> ReAct Agent Path
+    F["🟡 Câu Hỏi Phức Tạp / Dữ Liệu Động & Thao Tác<br/>(Tra cứu CV_101/102, sàng lọc hồ sơ, đặt lịch phỏng vấn, gửi email)"] :::reactStyle
+    G["🧠 REACT AGENT PATH<br/>(Vòng lặp ReAct: Thought ➔ Action)"] :::reactStyle
+    
+    %% ReAct Tool Execution & Observation Loop
+    H{"🛠️ Gọi Công Cụ Phù Hợp (Tools)"} :::toolStyle
+    H1["query_candidate_database / parse_cv"] :::toolStyle
+    H2["score_candidate / check_job_requirements"] :::toolStyle
+    H3["schedule_interview / send_email_notification"] :::toolStyle
+    
+    I["👁️ Thu Nhận Kết Quả Quan Sát (Observation)"] :::toolStyle
+    
+    %% Guardrails & Safety Checks
+    J{"🛡️ Kiểm Trợ Phanh Guardrails & Giới Hạn Max Iterations"} :::guardStyle
+    J_Pass["✅ Đạt Điểm Dừng / Có Final Answer"] :::guardStyle
+    J_Fail["⚠️ Lỗi Format / Quá 3 Vòng Lặp / Bẫy Injection"] :::guardStyle
+    J_Fallback["🛑 Ngắt Lặp An Toàn & Phản Hồi Cảnh Báo"] :::guardStyle
+    
+    K["🏁 Tổng Hợp Câu Trả Lời Hoàn Chỉnh (Final Answer)"] :::endStyle
+    L["📤 Trả Phản Hồi Cho Người Dùng (Output Response)"] :::endStyle
+
+    %% Connections
+    A --> B
+    
+    %% Chatbot Route
+    B -- "Yêu cầu kiến thức tĩnh" --> C
+    C --> D
+    D --> E
+    E --> L
+    
+    %% ReAct Agent Route
+    B -- "Yêu cầu tra cứu/thao tác dữ liệu" --> F
+    F --> G
+    G --> H
+    H --> H1 & H2 & H3
+    H1 & H2 & H3 --> I
+    I --> J
+    
+    J -- "Hợp lệ" --> J_Pass
+    J -- "Phát hiện lỗi/bẫy" --> J_Fail
+    J_Fallback --> L
+    J_Pass --> K
+    K --> L
