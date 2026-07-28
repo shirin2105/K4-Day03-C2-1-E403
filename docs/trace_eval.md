@@ -15,18 +15,31 @@
 
 ---
 
-## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
+## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3 - TOPIC 9)
 
-**Câu hỏi**: *"Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?"*
+**Câu hỏi**: *"Sàng lọc hồ sơ ứng viên Trần Thị B (ID: CV_102) cho vị trí Data Scientist, nếu phù hợp hãy đặt lịch phỏng vấn vào lúc 14:00 ngày mai."*
 
-### 🤖 Chatbot Baseline:
-* **Phản hồi**: *"Tôi không có truy cập Internet thời gian thực nên không biết thời tiết hôm nay ở Hà Nội."*
-* **Nhận xét**: An toàn nhưng không giải quyết được nhu cầu thực tế của người dùng.
+### 🤖 Chatbot Baseline (Mốc 2):
+* **Phản hồi thực tế từ Chatbot**:
+  > *"Xin chào bạn! Rất vui được trò chuyện và hỗ trợ bạn ngày hôm nay. 😊*
+  > 
+  > *Về yêu cầu sàng lọc hồ sơ của ứng viên **Trần Thị B (ID: CV_102)** cho vị trí **Data Scientist** và đặt lịch phỏng vấn vào lúc 14:00 ngày mai:*
+  > 
+  > *Mình rất tiếc phải thông báo rằng hiện tại mình chỉ là **phiên bản Chatbot tư vấn cơ bản, chưa được kết nối trực tiếp với hệ thống cơ sở dữ liệu nội bộ và lịch biểu thời gian thực** của công ty. Vì vậy, mình không thể tra cứu thông tin chi tiết của mã hồ sơ CV_102 cũng như không có thẩm quyền để tự động đặt lịch phỏng vấn trên hệ thống cho ứng viên được.*
+  > 
+  > *Tuy nhiên, nếu bạn đang xây dựng quy trình tuyển dụng cho vị trí này, mình rất sẵn lòng hỗ trợ bạn dưới góc độ chuyên môn như:*
+  > *- Gợi ý các tiêu chí sàng lọc hồ sơ chuẩn cho vị trí Data Scientist...*
+  > *- Cung cấp bộ câu hỏi phỏng vấn...*
+  > *- Chia sẻ các bước trong quy trình tuyển dụng...*
+  > 
+  > *Nếu bạn cần hỗ trợ về các thông tin chuyên môn này, hãy cứ thoải mái chia sẻ với mình nhé! Chúc bạn một ngày làm việc hiệu quả! 🌸"*
 
-### 🧠 ReAct Agent:
-* **Thought 1**: Cần tra cứu thời tiết Hà Nội.
-* **Action 1**: `get_weather['Hà Nội']`
-* **Observation 1**: `Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%.`
-* **Thought 2**: Đã có thông tin 28°C nắng nhẹ, đưa ra lời khuyên trang phục.
-* **Final Answer**: *"Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc quần áo thoáng mát!"*
-* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.
+* **Nhận xét & Phân tích của Role 5 (Mốc 2)**:
+  * **Điểm tích cực**: Chatbot thể hiện thái độ thân thiện, tuân thủ đúng System Prompt, nhận diện rõ giới hạn quyền hạn của mình và từ chối một cách lịch sự, tránh phát sinh ảo giác (hallucination). Ngoài ra còn chủ động đề xuất hỗ trợ thông tin tĩnh.
+  * **Hạn chế cốt lõi**: Chatbot Baseline **bất lực hoàn toàn trước bài toán thực tế** do không có khả năng truy cập dữ liệu thời gian thực (CSDL hồ sơ CV_102) và không có công cụ thực thi thao tác (đặt lịch phỏng vấn).
+  * **Kết luận Mốc 2**: Minh chứng rõ ràng tại sao bài toán này **bắt buộc phải nâng cấp lên ReAct Agent** (được trang bị 2 công cụ `screen_resume` và `schedule_interview`) ở Mốc 3.
+
+---
+
+### 🧠 ReAct Agent (Mốc 3 - Chờ cập nhật Trace Log):
+*(Dành cho Role 5 trích xuất nhật ký Thought -> Action -> Observation sau khi Role 4 hoàn thành lắp ráp Mốc 3)*
