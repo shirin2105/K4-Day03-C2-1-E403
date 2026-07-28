@@ -129,6 +129,25 @@ def run_react_agent(user_query: str, provider):
         print(f"\n🛡️ GUARDRAIL TRIGGERED: Vượt quá {MAX_ITERATIONS} vòng lặp. Ngắt Agent an toàn!")
 
 
+def interactive_mode(provider):
+    print("\n==================================================")
+    print("💬 CHẾ ĐỘ TƯƠNG TÁC TRỰC TIẾP (INTERACTIVE AGENT CHAT)")
+    print("Gõ câu hỏi của bạn để thử nghiệm ReAct Agent (Gõ 'exit' hoặc 'quit' để thoát)")
+    print("==================================================")
+    while True:
+        try:
+            user_input = input("\n👤 Bạn: ").strip()
+            if not user_input:
+                continue
+            if user_input.lower() in ["exit", "quit", "q"]:
+                print("👋 Cảm ơn bạn đã thử nghiệm AI Agent!")
+                break
+            run_react_agent(user_input, provider)
+        except (KeyboardInterrupt, EOFError):
+            print("\n👋 Đã thoát ứng dụng.")
+            break
+
+
 if __name__ == "__main__":
     print("==================================================")
     print("🏫 ĐẠI HỌC VINUNI - BÀI LAB 3: CHATBOT VS REACT AGENT")
@@ -162,3 +181,6 @@ if __name__ == "__main__":
     sample_query_5 = tests[4]["question"]
     print(f"\n--- DEMO 4: CÂU BẪY PROMPT INJECTION (TEST CASE #5) ---")
     run_react_agent(sample_query_5, provider)
+
+    # 3. Mở Chế độ Tương tác Trực tiếp cho Người dùng Test
+    interactive_mode(provider)
