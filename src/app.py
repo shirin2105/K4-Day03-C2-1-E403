@@ -106,6 +106,8 @@ def run_react_agent(user_query: str, provider):
                     interviewer = "hr_bot@company.com" # Role 4 tự hardcode cứu nguy
                     obs = AVAILABLE_TOOLS["schedule_interview"](name, interviewer, time_slot)
                     
+                elif tool_name in AVAILABLE_TOOLS:
+                    obs = AVAILABLE_TOOLS[tool_name](*args_list)
                 else:
                     obs = f"Lỗi: Tool '{tool_name}' không khả dụng trong hệ thống."
                     
@@ -140,11 +142,23 @@ if __name__ == "__main__":
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
     
-    # Chạy thử câu test số 3
-    sample_query = tests[2]["question"]
+    # 1. Chạy thử câu test số 3 (Multi-step)
+    sample_query_3 = tests[2]["question"]
+    print("--- DEMO 1: CHẠY CÂU TEST #3 TRÊN CHATBOT BASELINE ---")
+    run_baseline_chatbot(sample_query_3, provider)
     
-    print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
-    run_baseline_chatbot(sample_query, provider)
+    print("\n--- DEMO 2: CHẠY CÂU TEST #3 TRÊN REACT AGENT ---")
+    run_react_agent(sample_query_3, provider)
+
+    # 2. Role 1 kiểm tra câu test số 4 & 5 (Edge Case & Guardrail Safety)
+    print("\n==================================================")
+    print("🛡️ ROLE 1 KIỂM TRỬA PHANH GUARDRAIL (EDGE CASE & SAFETY)")
+    print("==================================================")
     
-    print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
-    run_react_agent(sample_query, provider)
+    sample_query_4 = tests[3]["question"]
+    print(f"\n--- DEMO 3: CÂU BẪY DỮ LIỆU (TEST CASE #4) ---")
+    run_react_agent(sample_query_4, provider)
+
+    sample_query_5 = tests[4]["question"]
+    print(f"\n--- DEMO 4: CÂU BẪY PROMPT INJECTION (TEST CASE #5) ---")
+    run_react_agent(sample_query_5, provider)

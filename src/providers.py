@@ -131,6 +131,43 @@ class OpenRouterProvider(BaseLLMProvider):
             return f"[OpenRouter Exception]: {str(e)}"
 
 
+class HuggingFaceProvider(BaseLLMProvider):
+    """Hugging Face Inference Router API Provider (Gọi các mô hình Open Source: Qwen 2.5 7B, Llama 3.1, v.v.)"""
+    def __init__(self, api_key: str = None, model: str = None):
+        self.api_key = api_key or os.getenv("HUGGINGFACE_API_KEY") or os.getenv("HF_TOKEN")
+        self.model_name = model or os.getenv("LLM_MODEL") or "Qwen/Qwen2.5-7B-Instruct"
+        
+    def generate(self, prompt: str, system_prompt: str = "") -> str:
+        if not self.api_key or self.api_key in ["your_huggingface_api_key_here", "your_hf_token_here"]:
+            return "[HuggingFace Error]: Chưa cấu hình HUGGINGFACE_API_KEY (hoặc HF_TOKEN) trong file .env!"
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json"
+            }
+            messages = []
+            if system_prompt:
+                messages.append({"role": "system", "content": system_prompt})
+            messages.append({"role": "user", "content": prompt})
+            
+            payload = {
+                "model": self.model_name,
+                "messages": messages,
+                "max_tokens": 1000
+            }
+            
+            router_url = "https://router.huggingface.co/v1/chat/completions"
+            res = requests.post(router_url, headers=headers, json=payload, timeout=45)
+            
+            if res.status_code == 200:
+                data = res.json()
+                return data["choices"][0]["message"]["content"]
+            else:
+                return f"[HuggingFace API Error {res.status_code}]: {res.text}"
+        except Exception as e:
+            return f"[HuggingFace Exception]: {str(e)}"
+
+
 class MockProvider(BaseLLMProvider):
     """Offline Mock Provider (Cho bài test không cần kết nối API)"""
     def generate(self, prompt: str, system_prompt: str = "") -> str:
@@ -152,6 +189,8 @@ def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
         return AnthropicProvider()
     elif name == "openrouter":
         return OpenRouterProvider()
+    elif name in ["huggingface", "hf"]:
+        return HuggingFaceProvider()
     else:
         return MockProvider()
 
