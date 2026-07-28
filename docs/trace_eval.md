@@ -7,11 +7,11 @@
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `5/5` | Bài toán phải chia thành nhiều bước phụ thuộc nhau: đọc hồ sơ → trích xuất thông tin → đối chiếu yêu cầu tuyển dụng → chấm điểm → phân loại → đề xuất hành động tiếp theo. |
+| 🛠️ **Tool Interaction** | `5/5` | Hệ thống cần sử dụng nhiều công cụ như kho CV, cơ sở dữ liệu tuyển dụng/ATS, email và lịch làm việc để tra cứu hồ sơ, liên hệ ứng viên và tạo lịch phỏng vấn. |
+| 🔀 **Dynamic Decision** | `4/5` | Hành động tiếp theo phụ thuộc vào kết quả vừa quan sát: hồ sơ đạt thì chuyển phê duyệt; thiếu thông tin thì yêu cầu bổ sung; lịch trùng thì tìm khung giờ khác; ứng viên từ chối thì đề xuất lịch mới. |
+| ⏳ **Long Horizon** | `5/5` | Hệ thống phải duy trì mục tiêu tuyển dụng qua nhiều trạng thái và vòng lặp: chờ phê duyệt, chờ ứng viên phản hồi, điều chỉnh lịch, gửi nhắc lịch và cập nhật trạng thái hồ sơ.|
+| **TỔNG ĐIỂM FIT** | **19/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
 
 ---
 
