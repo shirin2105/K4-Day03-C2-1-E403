@@ -57,10 +57,12 @@ def run_react_agent(user_query: str, provider):
     import re
     import json
     
-    print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
+    # 🛡️ SANITIZE USER INPUT: Vô hiệu hóa nhãn giả mạo system directive
+    sanitized_query = re.sub(r'\[SYSTEM\s+DIRECTIVE.*?\]', '[USER_DATA_REDACTED]', user_query, flags=re.IGNORECASE)
+    sanitized_query = re.sub(r'DAN\s+Mode\s+Activated', '[UNAUTHORIZED_ROLEPLAY]', sanitized_query, flags=re.IGNORECASE)
     
     # Context Buffer: Nơi lưu trữ toàn bộ lịch sử Suy nghĩ - Hành động - Kết quả
-    context = f"Question: {user_query}\n"
+    context = f"Question: {sanitized_query}\n"
     step = 0
     
     while step < MAX_ITERATIONS:
